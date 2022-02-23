@@ -9,7 +9,7 @@ import {
   AreaHighlight,
 } from "./react-pdf-highlighter";
 
-import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
+import type { IHighlight, NewHighlight, Content } from "./react-pdf-highlighter";
 
 import { testHighlights as _testHighlights } from "./test-highlights";
 import { Spinner } from "./Spinner";
@@ -34,15 +34,16 @@ const resetHash = () => {
 };
 
 const HighlightPopup = ({
-  comment,
+  content,
 }: {
-  comment: { text: string; emoji: string };
+  content: Content;
 }) =>
-  comment.text ? (
+  content.text ? (
     <div className="Highlight__popup">
-      {comment.emoji} {comment.text}
+      {content.text}
     </div>
   ) : null;
+
 
 const PRIMARY_PDF_URL = "https://arxiv.org/pdf/1708.08021.pdf";
 const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
@@ -75,7 +76,7 @@ class App extends Component<{}, State> {
     });
   };
 
-  scrollViewerTo = (highlight: any) => {};
+  scrollViewerTo = (highlight: any) => { };
 
   scrollToHighlightFromHash = () => {
     const highlight = this.getHighlightById(parseIdFromHash());
@@ -122,11 +123,11 @@ class App extends Component<{}, State> {
         } = h;
         return id === highlightId
           ? {
-              id,
-              position: { ...originalPosition, ...position },
-              content: { ...originalContent, ...content },
-              ...rest,
-            }
+            id,
+            position: { ...originalPosition, ...position },
+            content: { ...originalContent, ...content },
+            ...rest,
+          }
           : h;
       }),
     });
@@ -170,7 +171,7 @@ class App extends Component<{}, State> {
                   <Tip
                     onOpen={transformSelection}
                     onConfirm={(comment) => {
-                      this.addHighlight({ content, position, comment });
+                      this.addHighlight({ content, position });
 
                       hideTipAndSelection();
                     }}
@@ -193,7 +194,6 @@ class App extends Component<{}, State> {
                     <Highlight
                       isScrolledTo={isScrolledTo}
                       position={highlight.position}
-                      comment={highlight.comment}
                     />
                   ) : (
                     <AreaHighlight
